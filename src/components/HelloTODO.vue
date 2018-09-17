@@ -13,8 +13,8 @@
         <tr v-for="item in todos" v-bind:key="item.id">
           <td>{{ item.id }}</td>
           <td>{{ item.comment }}</td>
-          <td><button>{{ item.state }}</button></td>
-          <td><button>削除</button></td>
+          <td><button v-on:click="changeState(item)">{{ item.state }}</button></td>
+          <td><button v-on:click="del(item)">削除</button></td>
         </tr>
       </tbody>
     </table>
@@ -33,7 +33,7 @@ var KEY = 'vue_todo_sample'
 var todoStorage = {
   fetch: function () {
     var todos = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || '[]'
+      localStorage.getItem(KEY) || '[]'
     )
     todos.forEach(function (todo, index) {
       todo.id = index
@@ -65,7 +65,15 @@ export default {
         state: 0
       })
       comment.value = ''
+    },
+    changeState: function(item){
+      item.state = item.state ? 0 : 1
+    },
+    del: function(item){
+      var uid = this.todos.indexOf(item)
+      this.todos.splice(uid, 1)
     }
+
   },
   watch: {
     todos: {
