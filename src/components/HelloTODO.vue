@@ -10,10 +10,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in todos" v-bind:key="item.id">
+        <tr v-for="item in computedTodos" v-bind:key="item.id">
           <td>{{ item.id }}</td>
           <td>{{ item.comment }}</td>
-          <td><button v-on:click="changeState(item)">{{ item.state }}</button></td>
+          <td><button v-on:click="changeState(item)">{{ computedLabels[item.state] }}</button></td>
           <td><button v-on:click="del(item)">削除</button></td>
         </tr>
       </tbody>
@@ -23,6 +23,9 @@
       コメント <input type="text" ref="comment">
       <button type="submit">追加</button>
     </form>
+    <label v-for="item in options" v-bind:key="item.val">
+      <input type="radio" v-model="currentOption" v-bind:value="item.val">{{ item.label }}
+    </label>
   </div>
 </template>
 
@@ -50,7 +53,13 @@ export default {
   name: 'HelloTODO',
   data() {
     return{
-      todos: []
+      todos: [],
+      options: [
+         { val : -1, label : "ALL"}
+        ,{ val : 0, label : "Processing"}
+        ,{ val : 1, label : "Done"}
+      ],
+      currentOption: -1
     }
   },
   methods: {
@@ -86,6 +95,18 @@ export default {
   },
   created() {
     this.todos = todoStorage.fetch()
+  },
+  computed: {
+    computedTodos: function() {
+      // データ current が -1 ならすべて
+      // それ以外なら current と state が一致するものだけに絞り込む
+      return this.todos.filter(function(el) {
+        return this.currentOption < 0 ? true : this.currentOption === el.state
+      }, this)
+    },
+    computedLabels: function(){
+      return {"0":"Processing", "1":"Done", "-1":"All"}
+    }
   }
 }
 </script>
@@ -97,7 +118,9 @@ h1 {
 }
 table {
   margin: 0 auto;
-  width: 90%;
+}
+th {
+  width: 200px;
 }
 
 </style>
