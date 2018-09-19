@@ -51,19 +51,19 @@ var todoStorage = {
 
 export default {
   name: 'HelloTODO',
-  data() {
-    return{
+  data () {
+    return {
       todos: [],
       options: [
-         { val : -1, label : "ALL"}
-        ,{ val : 0, label : "Processing"}
-        ,{ val : 1, label : "Done"}
+        { val: -1, label: 'ALL' },
+        { val: 0, label: 'Processing' },
+        { val: 1, label: 'Done' }
       ],
       currentOption: -1
     }
   },
   methods: {
-    add: function(e, val){
+    add: function (e, val) {
       var comment = this.$refs.comment
       if (!comment.value.length) {
         return
@@ -75,10 +75,10 @@ export default {
       })
       comment.value = ''
     },
-    changeState: function(item){
+    changeState: function (item) {
       item.state = item.state ? 0 : 1
     },
-    del: function(item){
+    del: function (item) {
       var uid = this.todos.indexOf(item)
       this.todos.splice(uid, 1)
     }
@@ -86,26 +86,26 @@ export default {
   },
   watch: {
     todos: {
-      handler: function(todos) {
+      handler: function (todos) {
         todoStorage.save(todos)
       },
       // deepオプション：ネストデータの監視
       deep: true
     }
   },
-  created() {
+  created () {
     this.todos = todoStorage.fetch()
   },
   computed: {
-    computedTodos: function() {
+    computedTodos: function () {
       // データ current が -1 ならすべて
       // それ以外なら current と state が一致するものだけに絞り込む
-      return this.todos.filter(function(el) {
+      return this.todos.filter(function (el) {
         return this.currentOption < 0 ? true : this.currentOption === el.state
       }, this)
     },
-    computedLabels: function(){
-      return {"0":"Processing", "1":"Done", "-1":"All"}
+    computedLabels: function () {
+      return { '0': 'Processing', '1': 'Done', '-1': 'All' }
     }
   }
 }
@@ -122,5 +122,4 @@ table {
 th {
   width: 200px;
 }
-
 </style>
