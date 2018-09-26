@@ -13,15 +13,19 @@
         <tr v-for="item in computedTodos" v-bind:key="item.id">
           <td>{{ item.id }}</td>
           <td>{{ item.comment }}</td>
-          <td><button v-on:click="changeState(item)">{{ computedLabels[item.state] }}</button></td>
-          <td><button v-on:click="del(item)">削除</button></td>
+          <td><vs-switch vs-color="dark" v-model="item.stateBool">
+                <span slot="on">Done</span>
+                <span slot="off">Yet</span>
+              </vs-switch>
+          </td>    
+          <td><vs-button vs-type="flat" vs-color="warning" v-on:click="del(item)">削除</vs-button></td>
         </tr>
       </tbody>
     </table>
     <h2>TODOを追加する</h2>
     <form class="add-form" v-on:submit.prevent="add">
       コメント <input type="text" ref="comment">
-      <button type="submit">追加</button>
+      <vs-button vs-type="flat" vs-color="success" type="submit">追加</vs-button>
     </form>
     <label v-for="item in options" v-bind:key="item.val">
       <input type="radio" v-model="currentOption" v-bind:value="item.val">{{ item.label }}
@@ -77,6 +81,7 @@ export default {
     },
     changeState: function (item) {
       item.state = item.state ? 0 : 1
+      item.stateBool = item.state ? false : true
     },
     del: function (item) {
       var uid = this.todos.indexOf(item)
